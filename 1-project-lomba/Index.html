@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>🇮🇩 Lomba Kemerdekaan</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+  <!-- ===== HOME SCREEN ===== -->
+  <div id="screen-home" class="screen active">
+    <div class="home-bg"></div>
+    <div class="home-content">
+      <div class="flag-stripe top"></div>
+      <div class="home-hero">
+        <span class="home-emoji">🇮🇩</span>
+        <h1 class="home-title">LOMBA<br>KEMERDEKAAN</h1>
+        <p class="home-sub">Kelola turnamen RT/RW langsung dari browser</p>
+      </div>
+      <div class="sport-picker">
+        <p class="picker-label">Pilih Olahraga</p>
+        <div class="sport-cards">
+          <button class="sport-card" onclick="selectSport('futsal')">
+            <span class="sport-icon">⚽</span>
+            <span class="sport-name">Futsal</span>
+          </button>
+          <button class="sport-card" onclick="selectSport('basket')">
+            <span class="sport-icon">🏀</span>
+            <span class="sport-name">Basket</span>
+          </button>
+        </div>
+      </div>
+      <div class="flag-stripe bottom"></div>
+    </div>
+  </div>
+
+  <!-- ===== SPORT SCREEN ===== -->
+  <div id="screen-sport" class="screen">
+    <header class="app-header">
+      <button class="btn-back" onclick="goHome()">← Kembali</button>
+      <h2 id="sport-title" class="header-title">Futsal</h2>
+      <div></div>
+    </header>
+
+    <nav class="tab-nav">
+      <button class="tab-btn active" data-tab="tab-tim" onclick="switchTab('tab-tim', this)">👥 Tim</button>
+      <button class="tab-btn" data-tab="tab-bagan" onclick="switchTab('tab-bagan', this)">🏆 Bagan</button>
+      <button class="tab-btn" data-tab="tab-skor" onclick="switchTab('tab-skor', this)">📊 Skor</button>
+    </nav>
+
+    <!-- TAB TIM -->
+    <div id="tab-tim" class="tab-content active">
+      <div class="section-card">
+        <h3 class="section-title">Tambah Tim Baru</h3>
+        <input id="input-team-name" class="input-field" type="text" placeholder="Nama Tim (contoh: RT 05 Warriors)" maxlength="30" />
+        <div id="player-inputs">
+          <input class="input-field player-input" type="text" placeholder="Nama Pemain 1" maxlength="25" />
+          <input class="input-field player-input" type="text" placeholder="Nama Pemain 2" maxlength="25" />
+          <input class="input-field player-input" type="text" placeholder="Nama Pemain 3" maxlength="25" />
+        </div>
+        <div class="btn-row">
+          <button class="btn-add-player" onclick="addPlayerInput()">+ Tambah Pemain</button>
+          <button class="btn-primary" onclick="addTeam()">💾 Simpan Tim</button>
+        </div>
+      </div>
+
+      <div class="section-card">
+        <h3 class="section-title">Daftar Tim <span id="team-count" class="badge">0</span></h3>
+        <div id="team-list" class="team-list">
+          <p class="empty-state">Belum ada tim. Tambah tim dulu yuk!</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB BAGAN -->
+    <div id="tab-bagan" class="tab-content">
+      <div class="section-card">
+        <h3 class="section-title">Bagan Pertandingan</h3>
+        <p class="section-desc">Minimal 2 tim untuk membuat bagan. Sistem knockout otomatis.</p>
+        <button class="btn-primary full-width" onclick="generateBracket()">🎲 Acak & Generate Bagan</button>
+      </div>
+      <div id="bracket-container" class="bracket-container"></div>
+    </div>
+
+    <!-- TAB SKOR -->
+    <div id="tab-skor" class="tab-content">
+      <div class="section-card">
+        <h3 class="section-title">Mulai Pertandingan</h3>
+        <div class="team-selector">
+          <div class="selector-group">
+            <label class="selector-label">Tim A</label>
+            <select id="select-team-a" class="select-field"></select>
+          </div>
+          <div class="vs-badge">VS</div>
+          <div class="selector-group">
+            <label class="selector-label">Tim B</label>
+            <select id="select-team-b" class="select-field"></select>
+          </div>
+        </div>
+        <button class="btn-primary full-width" onclick="startMatch()">▶ Mulai Pertandingan</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SCOREBOARD SCREEN ===== -->
+  <div id="screen-scoreboard" class="screen">
+    <header class="app-header scoreboard-header">
+      <button class="btn-back light" onclick="endMatch()">← Selesai</button>
+      <h2 class="header-title light" id="match-sport-label">Futsal</h2>
+      <div></div>
+    </header>
+
+    <div class="scoreboard-wrap">
+      <div class="scoreboard-card">
+
+        <div class="score-panel team-a-panel">
+          <div class="team-label" id="sb-team-a-name">Tim A</div>
+          <div class="score-display" id="sb-score-a">0</div>
+          <div class="score-btns">
+            <button class="score-btn" onclick="addScore('a', 1)">+1</button>
+            <button class="score-btn" onclick="addScore('a', 2)">+2</button>
+            <button class="score-btn" onclick="addScore('a', 3)">+3</button>
+            <button class="score-btn minus" onclick="addScore('a', -1)">−1</button>
+          </div>
+        </div>
+
+        <div class="score-divider">
+          <div class="divider-vs">:</div>
+        </div>
+
+        <div class="score-panel team-b-panel">
+          <div class="team-label" id="sb-team-b-name">Tim B</div>
+          <div class="score-display" id="sb-score-b">0</div>
+          <div class="score-btns">
+            <button class="score-btn" onclick="addScore('b', 1)">+1</button>
+            <button class="score-btn" onclick="addScore('b', 2)">+2</button>
+            <button class="score-btn" onclick="addScore('b', 3)">+3</button>
+            <button class="score-btn minus" onclick="addScore('b', -1)">−1</button>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="scoreboard-actions">
+        <button class="btn-secondary" onclick="resetScore()">🔄 Reset Skor</button>
+      </div>
+
+      <div id="score-log" class="score-log"></div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+                                                        </html>
